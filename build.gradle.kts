@@ -14,10 +14,11 @@ repositories {
 }
 
 dependencies {
-    testImplementation(kotlin("test-junit5"))
     implementation(kotlin("stdlib-jdk8"))
+
+    testImplementation(kotlin("test-junit"))
 }
 
 application {
-    mainClassName = "MainKt"
+    mainClassName = "nl.marc.MainKt"
 }

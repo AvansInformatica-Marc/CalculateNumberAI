@@ -5,7 +5,7 @@ import nl.marc.game.Game
 import nl.marc.game.GameSolution
 
 object DepthSearchAI {
-    fun findBestResult(game: Game, emitResult: (MathematicOperation) -> Unit) {
+    inline fun findBestResult(game: Game, crossinline emitResult: (MathematicOperation) -> Unit) {
         var closestApproach: GameSolution.DifferentResult? = null
 
         val numbers = game.numbers.map {
@@ -38,7 +38,7 @@ object DepthSearchAI {
             emitResult(closestApproach!!.mathematicOperation)
     }
 
-    private fun getResults(previousResult: MathematicOperation?, numbersLeft: List<MathematicOperation.Number>, emitResult: (MathematicOperation) -> Boolean): Boolean {
+    fun getResults(previousResult: MathematicOperation?, numbersLeft: List<MathematicOperation.Number>, emitResult: (MathematicOperation) -> Boolean): Boolean {
         if (numbersLeft.isEmpty())
             return emitResult(previousResult!!)
 
