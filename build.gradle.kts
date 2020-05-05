@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.4-M1"
+    kotlin("jvm") version "1.3.72"
     application
 }
 
@@ -8,9 +8,6 @@ version = "1.0"
 
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
-    }
 }
 
 dependencies {
@@ -21,4 +18,10 @@ dependencies {
 
 application {
     mainClassName = "nl.marc.MainKt"
+}
+
+tasks.jar {
+    manifest {
+        attributes(mapOf("Main-Class" to "nl.marc.MainKt"))
+    }
 }
