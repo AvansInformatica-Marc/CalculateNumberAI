@@ -1,41 +1,57 @@
 package nl.marc
 
-import nl.marc.ai.DepthSearchAI
-import nl.marc.ai.SimpleReduce
+import nl.marc.ai.AStarSearchAI
+import nl.marc.ai.DepthFirstSearchAI
+import nl.marc.ai.GreedySearchAI
 import nl.marc.game.Game
+import nl.marc.game.GameWithRandomNumbers
+import java.text.SimpleDateFormat
+import java.util.*
 
-typealias AI = (game: Game, emitResult: (MathematicOperation) -> Unit) -> Unit
 
-fun main() {
+typealias AI = (game: Game) -> MathOp?
+
+val currentTime: String
+    get() = SimpleDateFormat("HH:mm.ss.SSS").format(Date())
+
+tailrec fun main() {
     println()
-    println("Choose solution finding method: ")
-    println("> Type 'depth' for DepthSearchAI")
-    println("> Type 'simple' for SimpleReduce")
+    val game: Game = GameWithRandomNumbers()
+    // GameWithRandomNumbers()
+    // GameWithChosenNumbers(listOf(4, 3, 3, 2), 18)
+    // GameWithChosenNumbers(listOf(6, 10, 25, 75, 5, 50), 728)
+    println("Numbers: ${game.numbers.joinToString()}")
+    println("Result: ${game.result}")
     println()
 
-    val ai: AI = when(readLine()?.toLowerCase()) {
-        "depth" -> DepthSearchAI::findBestResult
-        "simple" -> SimpleReduce::findResult
-        else -> {
-            println("None chosen")
-            return
-        }
+    val aiList = mapOf<String, AI>(
+        "Greedy" to GreedySearchAI::findResult,
+        "A*" to AStarSearchAI::findResult,
+        "DFS" to DepthFirstSearchAI::findResult
+    )
+
+    for((name, findResult) in aiList) {
+        println("$currentTime) $name: start searching...")
+        val solution = findResult(game)
+        println("$currentTime) $name: ${if(solution == null) "No solution found" else game.checkResult(solution).toString()}")
     }
 
     println()
 
-    val game = Game()
-    println("Numbers: ${game.numbers.joinToString()}")
-    println("Result: ${game.result}")
-
-    ai(game) {
+    if(!shouldExit()) {
         println()
-        println("Solution found!")
-        println(game.checkResult(it))
+        println("-----")
         println()
-
-        println("----------")
 
         main()
+    }
+}
+
+tailrec fun shouldExit(): Boolean {
+    println("Exit? (y/n): ")
+    return when(readLine()?.toLowerCase()?.trim()) {
+        "n", "no" -> false
+        "y", "yes" -> true
+        else -> shouldExit()
     }
 }
