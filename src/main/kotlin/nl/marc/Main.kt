@@ -1,46 +1,57 @@
 package nl.marc
 
-import nl.marc.ai.DepthSearchAI
-import nl.marc.ai.SimpleReduce
-import nl.marc.game.GameWithRandomNumbers
+import nl.marc.ai.AStarSearchAI
+import nl.marc.ai.DepthFirstSearchAI
+import nl.marc.ai.GreedySearchAI
 import nl.marc.game.Game
-import nl.marc.game.GameWithChosenNumbers
+import nl.marc.game.GameWithRandomNumbers
+import java.text.SimpleDateFormat
+import java.util.*
 
-typealias AI = (game: Game, emitResult: (MathematicOperation) -> Unit) -> Unit
 
-fun main() {
+typealias AI = (game: Game) -> MathOp?
+
+val currentTime: String
+    get() = SimpleDateFormat("HH:mm.ss.SSS").format(Date())
+
+tailrec fun main() {
     println()
-    println("Choose solution finding method: ")
-    println("> Type 'depth' for DepthSearchAI")
-    println("> Type 'simple' for SimpleReduce")
-    println()
-
-    val ai: AI = when(readLine()?.toLowerCase()) {
-        "depth" -> DepthSearchAI::findBestResult
-        "simple" -> SimpleReduce::findResult
-        else -> {
-            println("None chosen")
-            return
-        }
-    }
-
-    println()
-
-    val game: Game = GameWithChosenNumbers(listOf(6, 10, 25, 75, 5, 50), 728)
+    val game: Game = GameWithRandomNumbers()
     // GameWithRandomNumbers()
     // GameWithChosenNumbers(listOf(4, 3, 3, 2), 18)
     // GameWithChosenNumbers(listOf(6, 10, 25, 75, 5, 50), 728)
     println("Numbers: ${game.numbers.joinToString()}")
     println("Result: ${game.result}")
+    println()
 
-    ai(game) {
-        println()
-        println("Solution found!")
-        println(game.checkResult(it))
-        println()
+    val aiList = mapOf<String, AI>(
+        "Greedy" to GreedySearchAI::findResult,
+        "A*" to AStarSearchAI::findResult,
+        "DFS" to DepthFirstSearchAI::findResult
+    )
 
-        println("----------")
+    for((name, findResult) in aiList) {
+        println("$currentTime) $name: start searching...")
+        val solution = findResult(game)
+        println("$currentTime) $name: ${if(solution == null) "No solution found" else game.checkResult(solution).toString()}")
+    }
+
+    println()
+
+    if(!shouldExit()) {
+        println()
+        println("-----")
+        println()
 
         main()
+    }
+}
+
+tailrec fun shouldExit(): Boolean {
+    println("Exit? (y/n): ")
+    return when(readLine()?.toLowerCase()?.trim()) {
+        "n", "no" -> false
+        "y", "yes" -> true
+        else -> shouldExit()
     }
 }

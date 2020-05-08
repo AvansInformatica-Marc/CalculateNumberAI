@@ -1,6 +1,6 @@
 package nl.marc.game
 
-import nl.marc.MathematicOperation
+import nl.marc.MathOp
 import kotlin.math.abs
 
 abstract class Game {
@@ -8,7 +8,7 @@ abstract class Game {
 
     abstract val result: Int
 
-    fun checkResult(operation: MathematicOperation): GameSolution {
+    fun checkResult(operation: MathOp): GameSolution {
         val difference = abs(operation.result - result)
 
         val nums = numbers.toMutableList()
