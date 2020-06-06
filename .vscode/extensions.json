@@ -1,6 +1,5 @@
 {
     "recommendations": [
-        "visualstudioexptteam.vscodeintellicode",
         "fwcd.kotlin"
     ],
 }
